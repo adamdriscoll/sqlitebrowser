@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/SqliteBrowser.App/SqliteBrowser.App.csproj" />
+    <Project Path="src/SqliteBrowser.Core/SqliteBrowser.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SqliteBrowser.App.Tests/SqliteBrowser.App.Tests.csproj" />
+    <Project Path="tests/SqliteBrowser.Core.Tests/SqliteBrowser.Core.Tests.csproj" />
+  </Folder>
+</Solution>

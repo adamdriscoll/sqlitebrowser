@@ -1,0 +1,26 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SqliteBrowser.App.Views.CsvImportDialog"
+        Width="420" MinHeight="300" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Title="Import CSV">
+  <StackPanel Margin="16" Spacing="10">
+    <TextBlock Text="Import CSV" FontWeight="Bold" FontSize="16" />
+
+    <TextBlock Text="Destination table" />
+    <TextBox x:Name="TableNameBox" AutomationProperties.AutomationId="CsvImportDialog.TableNameBox" />
+
+    <TextBlock Text="Delimiter" />
+    <TextBox x:Name="DelimiterBox" AutomationProperties.AutomationId="CsvImportDialog.DelimiterBox" MaxLength="1" Text="," Width="48" HorizontalAlignment="Left" />
+
+    <CheckBox x:Name="HasHeaderCheck" AutomationProperties.AutomationId="CsvImportDialog.HasHeaderCheck" Content="First row is a header" IsChecked="True" />
+    <CheckBox x:Name="InferTypesCheck" AutomationProperties.AutomationId="CsvImportDialog.InferTypesCheck" Content="Infer column types" IsChecked="True" />
+    <CheckBox x:Name="CreateTableCheck" AutomationProperties.AutomationId="CsvImportDialog.CreateTableCheck" Content="Create table if it doesn't exist" IsChecked="True" />
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,16,0,0">
+      <Button x:Name="CancelButton" AutomationProperties.AutomationId="CsvImportDialog.CancelButton" Content="Cancel" Click="OnCancelClick" />
+      <Button x:Name="ImportButton" AutomationProperties.AutomationId="CsvImportDialog.ImportButton" Content="Import" Click="OnImportClick" IsDefault="True" />
+    </StackPanel>
+  </StackPanel>
+</Window>

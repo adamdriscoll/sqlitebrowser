@@ -1,0 +1,25 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SqliteBrowser.App.Views.AboutWindow"
+        Width="480" MinHeight="360" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Title="About SQLite Browser">
+  <StackPanel Margin="20" Spacing="12">
+    <TextBlock Text="SQLite Browser" FontWeight="Bold" FontSize="20" />
+    <TextBlock Text="A cross-platform desktop application for creating, inspecting, querying, and editing SQLite databases. A clean C# and Avalonia port of DB Browser for SQLite."
+               TextWrapping="Wrap" />
+
+    <Border Background="#332222" CornerRadius="4" Padding="10" BorderBrush="#996600" BorderThickness="1">
+      <TextBlock TextWrapping="Wrap"
+                 Text="Important: the database provider is Devolutions Ahtola, an experimental pure-managed SQLite-compatible engine. Review Ahtola's compatibility and durability status before using this application with production data." />
+    </Border>
+
+    <TextBlock TextWrapping="Wrap"
+               Text="Licensed under the Mozilla Public License Version 2.0 (MPL-2.0), as well as the GNU General Public License Version 3 or later (GPL-3.0-or-later). You may use, modify, and redistribute this software under the terms of either license. See LICENSE-MPL-2.0, LICENSE-GPL-3.0, and LICENSE-PLUGINS in the source distribution for full terms." />
+
+    <Button x:Name="CloseButton"
+            AutomationProperties.AutomationId="AboutWindow.CloseButton"
+            Content="Close" HorizontalAlignment="Right" Click="OnCloseClick" IsDefault="True" />
+  </StackPanel>
+</Window>
