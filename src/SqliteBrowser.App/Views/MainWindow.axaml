@@ -1,0 +1,252 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:SqliteBrowser.App.ViewModels"
+        x:Class="SqliteBrowser.App.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="{Binding WindowTitle}"
+        Width="1200" Height="800"
+        MinWidth="900" MinHeight="600">
+  <DockPanel>
+
+    <!-- Menu -->
+    <Menu DockPanel.Dock="Top" AutomationProperties.AutomationId="MainMenu">
+      <MenuItem Header="_File">
+        <MenuItem Header="_New Database..." Command="{Binding NewCommand}" HotKey="Ctrl+N" AutomationProperties.AutomationId="Menu.File.New" />
+        <MenuItem Header="_Open Database..." Command="{Binding OpenCommand}" HotKey="Ctrl+O" AutomationProperties.AutomationId="Menu.File.Open" />
+        <MenuItem Header="Open Database (Read-_Only)..." Command="{Binding OpenReadOnlyCommand}" AutomationProperties.AutomationId="Menu.File.OpenReadOnly" />
+        <Separator />
+        <MenuItem Header="_Close Database" Command="{Binding CloseCommand}" HotKey="Ctrl+W" AutomationProperties.AutomationId="Menu.File.Close" />
+        <MenuItem Header="Save Database _As..." Command="{Binding SaveAsCommand}" HotKey="Ctrl+Shift+S" AutomationProperties.AutomationId="Menu.File.SaveAs" />
+        <Separator />
+        <MenuItem Header="Import CS_V..." Command="{Binding ImportCsvCommand}" AutomationProperties.AutomationId="Menu.File.ImportCsv" />
+        <MenuItem Header="Import SQL _Script..." Command="{Binding ImportSqlScriptCommand}" AutomationProperties.AutomationId="Menu.File.ImportSqlScript" />
+        <Separator />
+        <MenuItem Header="Export Table as CSV..." Command="{Binding ExportTableCsvCommand}" AutomationProperties.AutomationId="Menu.File.ExportTableCsv" />
+        <MenuItem Header="Export Table as JSON..." Command="{Binding ExportTableJsonCommand}" AutomationProperties.AutomationId="Menu.File.ExportTableJson" />
+        <MenuItem Header="Export Query Results as CSV..." Command="{Binding ExportQueryCsvCommand}" AutomationProperties.AutomationId="Menu.File.ExportQueryCsv" />
+        <MenuItem Header="Export Query Results as JSON..." Command="{Binding ExportQueryJsonCommand}" AutomationProperties.AutomationId="Menu.File.ExportQueryJson" />
+        <MenuItem Header="Export SQL _Dump..." Command="{Binding ExportSqlDumpCommand}" AutomationProperties.AutomationId="Menu.File.ExportSqlDump" />
+        <Separator />
+        <MenuItem Header="E_xit" Click="OnExitClick" HotKey="Alt+F4" AutomationProperties.AutomationId="Menu.File.Exit" />
+      </MenuItem>
+
+      <MenuItem Header="_Edit">
+        <MenuItem Header="_Write Changes" Command="{Binding CommitCommand}" HotKey="Ctrl+S" AutomationProperties.AutomationId="Menu.Edit.Commit" />
+        <MenuItem Header="_Revert Changes" Command="{Binding RevertCommand}" HotKey="Ctrl+Z" AutomationProperties.AutomationId="Menu.Edit.Revert" />
+      </MenuItem>
+
+      <MenuItem Header="_View">
+        <MenuItem Header="Refresh _Structure" Command="{Binding Structure.RefreshCommand}" HotKey="F5" AutomationProperties.AutomationId="Menu.View.RefreshStructure" />
+        <MenuItem Header="Refresh _Data" Command="{Binding BrowseData.RefreshCommand}" AutomationProperties.AutomationId="Menu.View.RefreshData" />
+        <MenuItem Header="Refresh _Pragmas" Command="{Binding Pragmas.RefreshCommand}" AutomationProperties.AutomationId="Menu.View.RefreshPragmas" />
+      </MenuItem>
+
+      <MenuItem Header="_Tools">
+        <MenuItem Header="_Vacuum" Command="{Binding VacuumCommand}" AutomationProperties.AutomationId="Menu.Tools.Vacuum" />
+        <MenuItem Header="_Optimize" Command="{Binding OptimizeCommand}" AutomationProperties.AutomationId="Menu.Tools.Optimize" />
+        <Separator />
+        <MenuItem Header="_Integrity Check" Command="{Binding IntegrityCheckCommand}" AutomationProperties.AutomationId="Menu.Tools.IntegrityCheck" />
+        <MenuItem Header="_Quick Check" Command="{Binding QuickCheckCommand}" AutomationProperties.AutomationId="Menu.Tools.QuickCheck" />
+        <MenuItem Header="_Foreign Key Check" Command="{Binding ForeignKeyCheckCommand}" AutomationProperties.AutomationId="Menu.Tools.ForeignKeyCheck" />
+      </MenuItem>
+
+      <MenuItem Header="_Help">
+        <MenuItem Header="_About SQLite Browser..." Command="{Binding AboutCommand}" AutomationProperties.AutomationId="Menu.Help.About" />
+      </MenuItem>
+    </Menu>
+
+    <!-- Toolbar -->
+    <Border DockPanel.Dock="Top" Padding="6" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource SystemBaseLowColor}">
+      <StackPanel Orientation="Horizontal" Spacing="6">
+        <Button Content="New" Command="{Binding NewCommand}" AutomationProperties.AutomationId="Toolbar.New" />
+        <Button Content="Open" Command="{Binding OpenCommand}" AutomationProperties.AutomationId="Toolbar.Open" />
+        <Button Content="Open Read-Only" Command="{Binding OpenReadOnlyCommand}" AutomationProperties.AutomationId="Toolbar.OpenReadOnly" />
+        <Button Content="Save As" Command="{Binding SaveAsCommand}" AutomationProperties.AutomationId="Toolbar.SaveAs" />
+        <Button Content="Close" Command="{Binding CloseCommand}" AutomationProperties.AutomationId="Toolbar.Close" />
+        <Separator />
+        <Button Content="Write Changes" Command="{Binding CommitCommand}" AutomationProperties.AutomationId="Toolbar.Commit" />
+        <Button Content="Revert Changes" Command="{Binding RevertCommand}" AutomationProperties.AutomationId="Toolbar.Revert" />
+      </StackPanel>
+    </Border>
+
+    <!-- Status bar -->
+    <Border DockPanel.Dock="Bottom" Padding="8,4" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SystemBaseLowColor}">
+      <Grid ColumnDefinitions="Auto,*,Auto,Auto" AutomationProperties.AutomationId="StatusBar">
+        <TextBlock Grid.Column="0" Text="{Binding StatusPathText}" AutomationProperties.AutomationId="StatusBar.Path" Margin="0,0,16,0" />
+        <TextBlock Grid.Column="1" Text="{Binding ErrorMessage}" Foreground="Red" IsVisible="{Binding HasError}"
+                   AutomationProperties.AutomationId="StatusBar.Error" TextWrapping="Wrap" />
+        <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" IsVisible="{Binding !HasError}"
+                   AutomationProperties.AutomationId="StatusBar.Status" TextWrapping="Wrap" />
+        <TextBlock Grid.Column="2" Text="Read-Only" IsVisible="{Binding IsReadOnly}" FontWeight="Bold" Margin="8,0" />
+        <ProgressBar Grid.Column="3" IsIndeterminate="True" IsVisible="{Binding IsBusy}" Width="80" Height="8"
+                     AutomationProperties.AutomationId="StatusBar.Busy" />
+      </Grid>
+    </Border>
+
+    <!-- Main content -->
+    <TabControl AutomationProperties.AutomationId="MainTabs">
+
+      <!-- Structure tab -->
+      <TabItem Header="Structure" AutomationProperties.AutomationId="Tab.Structure">
+        <Grid ColumnDefinitions="320,*" Margin="8">
+          <DockPanel Grid.Column="0" Margin="0,0,8,0">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="6" Margin="0,0,0,6">
+              <Button Content="Refresh" Command="{Binding Structure.RefreshCommand}" AutomationProperties.AutomationId="Structure.RefreshButton" />
+              <Button Content="New..." Command="{Binding NewSchemaObjectCommand}" AutomationProperties.AutomationId="Structure.NewButton" />
+              <Button Content="Edit..." Command="{Binding EditSchemaObjectCommand}" AutomationProperties.AutomationId="Structure.EditButton" />
+              <Button Content="Delete" Command="{Binding DeleteSchemaObjectCommand}" AutomationProperties.AutomationId="Structure.DeleteButton" />
+            </StackPanel>
+            <TreeView ItemsSource="{Binding Structure.Groups}"
+                      SelectedItem="{Binding Structure.SelectedNode, Mode=TwoWay}"
+                      AutomationProperties.AutomationId="Structure.Tree">
+              <TreeView.DataTemplates>
+                <TreeDataTemplate DataType="vm:SchemaGroupViewModel" ItemsSource="{Binding Items}">
+                  <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
+                </TreeDataTemplate>
+                <TreeDataTemplate DataType="vm:SchemaObjectViewModel">
+                  <TextBlock Text="{Binding DisplayName}" />
+                </TreeDataTemplate>
+              </TreeView.DataTemplates>
+            </TreeView>
+          </DockPanel>
+
+          <Grid Grid.Column="1" RowDefinitions="Auto,2*,3*">
+            <TextBlock Grid.Row="0" Text="{Binding Structure.SelectedObject.DisplayName}" FontWeight="Bold" FontSize="16" Margin="0,0,0,6" />
+            <TextBox Grid.Row="1" Text="{Binding Structure.SelectedDdl}" IsReadOnly="True" AcceptsReturn="True"
+                      FontFamily="Cascadia Mono,Consolas,Menlo,monospace" TextWrapping="NoWrap"
+                      AutomationProperties.AutomationId="Structure.DdlText" Margin="0,0,0,8" />
+            <DataGrid Grid.Row="2" ItemsSource="{Binding Structure.SelectedColumns}"
+                      AutoGenerateColumns="False" IsReadOnly="True"
+                      x:CompileBindings="False"
+                      AutomationProperties.AutomationId="Structure.ColumnsGrid">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="#" Binding="{Binding Id}" Width="40" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="160" />
+                <DataGridTextColumn Header="Type" Binding="{Binding DataType}" Width="120" />
+                <DataGridCheckBoxColumn Header="Not Null" Binding="{Binding NotNull}" Width="80" />
+                <DataGridTextColumn Header="Default" Binding="{Binding DefaultValue}" Width="120" />
+                <DataGridTextColumn Header="PK" Binding="{Binding PrimaryKeyOrder}" Width="50" />
+                <DataGridCheckBoxColumn Header="Hidden" Binding="{Binding Hidden}" Width="70" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
+        </Grid>
+      </TabItem>
+
+      <!-- Browse Data tab -->
+      <TabItem Header="Browse Data" AutomationProperties.AutomationId="Tab.BrowseData">
+        <DockPanel Margin="8">
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,200,Auto,*,Auto,*,Auto,Auto" Margin="0,0,0,6" RowDefinitions="Auto">
+            <TextBlock Grid.Column="0" Text="Table:" VerticalAlignment="Center" Margin="0,0,4,0" />
+            <ComboBox Grid.Column="1" ItemsSource="{Binding BrowseData.Tables}"
+                      SelectedItem="{Binding BrowseData.SelectedTable, Mode=TwoWay}"
+                      AutomationProperties.AutomationId="BrowseData.TableSelector">
+              <ComboBox.ItemTemplate>
+                <DataTemplate DataType="vm:SchemaObjectViewModel">
+                  <TextBlock Text="{Binding DisplayName}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Grid.Column="2" Text="Filter:" VerticalAlignment="Center" Margin="10,0,4,0" />
+            <TextBox Grid.Column="3" Text="{Binding BrowseData.FilterText, Mode=TwoWay}" PlaceholderText="e.g. id &gt; 10"
+                      AutomationProperties.AutomationId="BrowseData.FilterText" Margin="0,0,6,0" />
+            <TextBlock Grid.Column="4" Text="Order by:" VerticalAlignment="Center" Margin="4,0,4,0" />
+            <TextBox Grid.Column="5" Text="{Binding BrowseData.OrderByText, Mode=TwoWay}" PlaceholderText="e.g. name DESC"
+                      AutomationProperties.AutomationId="BrowseData.OrderByText" Margin="0,0,6,0" />
+            <Button Grid.Column="6" Content="Apply" Command="{Binding BrowseData.ApplyFilterCommand}"
+                    AutomationProperties.AutomationId="BrowseData.ApplyFilterButton" Margin="0,0,6,0" />
+            <Button Grid.Column="7" Content="Refresh" Command="{Binding BrowseData.RefreshCommand}"
+                    AutomationProperties.AutomationId="BrowseData.RefreshButton" />
+          </Grid>
+
+          <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto" Margin="0,6,0,0">
+            <Button Grid.Column="0" Content="|&lt;" Command="{Binding BrowseData.FirstPageCommand}" AutomationProperties.AutomationId="BrowseData.FirstPageButton" />
+            <Button Grid.Column="1" Content="&lt;" Command="{Binding BrowseData.PreviousPageCommand}" AutomationProperties.AutomationId="BrowseData.PreviousPageButton" />
+            <TextBlock Grid.Column="2" Text="{Binding BrowseData.PageDescription}" VerticalAlignment="Center" Margin="8,0" AutomationProperties.AutomationId="BrowseData.PageDescription" />
+            <Button Grid.Column="3" Content="&gt;" Command="{Binding BrowseData.NextPageCommand}" AutomationProperties.AutomationId="BrowseData.NextPageButton" />
+            <Button Grid.Column="4" Content="&gt;|" Command="{Binding BrowseData.LastPageCommand}" AutomationProperties.AutomationId="BrowseData.LastPageButton" />
+            <NumericUpDown Grid.Column="6" Value="{Binding BrowseData.PageSize, Mode=TwoWay}" Minimum="1" Maximum="10000" Width="120"
+                            AutomationProperties.AutomationId="BrowseData.PageSizeBox" />
+            <Button Grid.Column="7" Content="Add Row" Command="{Binding BrowseData.AddRowCommand}" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseData.AddRowButton" />
+            <Button Grid.Column="8" Content="Delete Row" Command="{Binding BrowseData.DeleteRowCommand}" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseData.DeleteRowButton" />
+          </Grid>
+
+          <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+            <Button Content="Save Changes" Command="{Binding BrowseData.SaveChangesCommand}" AutomationProperties.AutomationId="BrowseData.SaveChangesButton" />
+            <TextBlock Text="Unsaved edits" IsVisible="{Binding BrowseData.HasPendingEdits}" Foreground="OrangeRed" VerticalAlignment="Center" />
+          </StackPanel>
+
+          <DataGrid x:Name="BrowseDataGrid" ItemsSource="{Binding BrowseData.RowsView}"
+                    SelectedItem="{Binding BrowseData.SelectedRow, Mode=TwoWay}"
+                    IsReadOnly="{Binding BrowseData.IsTableReadOnly}"
+                    AutoGenerateColumns="False"
+                    AutomationProperties.AutomationId="BrowseData.Grid" />
+        </DockPanel>
+      </TabItem>
+
+      <!-- Execute SQL tab -->
+      <TabItem Header="Execute SQL" AutomationProperties.AutomationId="Tab.ExecuteSql">
+        <Grid RowDefinitions="2*,Auto,Auto,3*,Auto,1*" Margin="8">
+          <TextBox Grid.Row="0" Text="{Binding ExecuteSql.SqlText, Mode=TwoWay}"
+                    AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap"
+                    FontFamily="Cascadia Mono,Consolas,Menlo,monospace"
+                    AutomationProperties.AutomationId="ExecuteSql.SqlTextBox" />
+
+          <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" Margin="0,6">
+            <Button Content="Execute" Command="{Binding ExecuteSql.ExecuteCommand}" AutomationProperties.AutomationId="ExecuteSql.ExecuteButton" />
+            <Button Content="Cancel" Command="{Binding ExecuteSql.CancelCommand}" AutomationProperties.AutomationId="ExecuteSql.CancelButton" />
+            <Button Content="Clear" Command="{Binding ExecuteSql.ClearCommand}" AutomationProperties.AutomationId="ExecuteSql.ClearButton" />
+            <Button Content="Export CSV" Command="{Binding ExportQueryCsvCommand}" AutomationProperties.AutomationId="ExecuteSql.ExportCsvButton" />
+            <Button Content="Export JSON" Command="{Binding ExportQueryJsonCommand}" AutomationProperties.AutomationId="ExecuteSql.ExportJsonButton" />
+          </StackPanel>
+
+          <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="16" Margin="0,0,0,6">
+            <TextBlock Text="{Binding ExecuteSql.ElapsedMilliseconds, StringFormat='Elapsed: {0} ms'}" AutomationProperties.AutomationId="ExecuteSql.Elapsed" />
+            <TextBlock Text="{Binding ExecuteSql.RowsAffected, StringFormat='Rows affected: {0}'}" AutomationProperties.AutomationId="ExecuteSql.RowsAffected" />
+            <TextBlock Text="{Binding ExecuteSql.StatusMessage}" AutomationProperties.AutomationId="ExecuteSql.Message" />
+          </StackPanel>
+
+          <DataGrid Grid.Row="3" x:Name="ExecuteSqlResultsGrid" ItemsSource="{Binding ExecuteSql.ResultsView}"
+                    AutoGenerateColumns="False"
+                    AutomationProperties.AutomationId="ExecuteSql.ResultsGrid" Margin="0,0,0,8" />
+
+          <TextBlock Grid.Row="4" Text="Command Log" FontWeight="Bold" Margin="0,0,0,4" />
+          <DataGrid Grid.Row="5" ItemsSource="{Binding ExecuteSql.CommandLog}"
+                    AutoGenerateColumns="False" IsReadOnly="True"
+                    x:CompileBindings="False"
+                    AutomationProperties.AutomationId="ExecuteSql.CommandLogGrid">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="160" />
+              <DataGridTextColumn Header="Command" Binding="{Binding CommandText}" Width="3*" />
+              <DataGridCheckBoxColumn Header="OK" Binding="{Binding Success}" Width="50" />
+              <DataGridTextColumn Header="Error" Binding="{Binding Error}" Width="2*" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </Grid>
+      </TabItem>
+
+      <!-- Pragmas tab -->
+      <TabItem Header="Pragmas" AutomationProperties.AutomationId="Tab.Pragmas">
+        <DockPanel Margin="8">
+          <Button DockPanel.Dock="Top" Content="Refresh" Command="{Binding Pragmas.RefreshCommand}"
+                  AutomationProperties.AutomationId="Pragmas.RefreshButton" Margin="0,0,0,8" HorizontalAlignment="Left" />
+          <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding Pragmas.Pragmas}" AutomationProperties.AutomationId="Pragmas.List">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:PragmaRowViewModel">
+                  <Grid ColumnDefinitions="160,2*,160,Auto" Margin="0,4" ToolTip.Tip="{Binding Description}">
+                    <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="1" Text="{Binding Description}" VerticalAlignment="Center" TextWrapping="Wrap" Opacity="0.7" Margin="8,0" />
+                    <TextBox Grid.Column="2" Text="{Binding Value, Mode=TwoWay}" AutomationProperties.AutomationId="{Binding Name}" />
+                    <Button Grid.Column="3" Content="Apply" Click="OnApplyPragmaClick" Margin="8,0,0,0" />
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </DockPanel>
+      </TabItem>
+
+    </TabControl>
+  </DockPanel>
+</Window>

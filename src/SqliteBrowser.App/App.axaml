@@ -1,0 +1,15 @@
+﻿<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SqliteBrowser.App.App"
+             RequestedThemeVariant="Default">
+
+  <Application.Styles>
+    <FluentTheme />
+    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+  </Application.Styles>
+
+  <Application.Resources>
+    <x:Double x:Key="ToolbarIconSize">16</x:Double>
+  </Application.Resources>
+
+</Application>

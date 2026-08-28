@@ -1,0 +1,22 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SqliteBrowser.App.Views.MessageDialog"
+        Width="440" MinHeight="160" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Title="Message">
+  <Grid RowDefinitions="Auto,*,Auto" Margin="16">
+    <TextBlock x:Name="TitleText" Grid.Row="0" FontWeight="Bold" FontSize="16" Margin="0,0,0,12" />
+    <ScrollViewer Grid.Row="1" MaxHeight="300">
+      <TextBlock x:Name="MessageText" TextWrapping="Wrap" />
+    </ScrollViewer>
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,16,0,0">
+      <Button x:Name="CancelButton"
+              AutomationProperties.AutomationId="MessageDialog.CancelButton"
+              Content="Cancel" Click="OnCancelClick" />
+      <Button x:Name="ConfirmButton"
+              AutomationProperties.AutomationId="MessageDialog.ConfirmButton"
+              Content="OK" Click="OnConfirmClick" IsDefault="True" />
+    </StackPanel>
+  </Grid>
+</Window>

@@ -1,0 +1,23 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SqliteBrowser.App.Views.DirtyChoiceDialog"
+        Width="440" MinHeight="180" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Title="Unsaved Changes">
+  <Grid RowDefinitions="Auto,*,Auto" Margin="16">
+    <TextBlock x:Name="TitleText" Grid.Row="0" FontWeight="Bold" FontSize="16" Margin="0,0,0,12" />
+    <TextBlock x:Name="MessageText" Grid.Row="1" TextWrapping="Wrap" />
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,16,0,0">
+      <Button x:Name="CancelButton"
+              AutomationProperties.AutomationId="DirtyChoiceDialog.CancelButton"
+              Content="Cancel" Click="OnCancelClick" />
+      <Button x:Name="DiscardButton"
+              AutomationProperties.AutomationId="DirtyChoiceDialog.DiscardButton"
+              Content="Discard Changes" Click="OnDiscardClick" />
+      <Button x:Name="SaveButton"
+              AutomationProperties.AutomationId="DirtyChoiceDialog.SaveButton"
+              Content="Save Changes" Click="OnSaveClick" IsDefault="True" />
+    </StackPanel>
+  </Grid>
+</Window>

@@ -1,0 +1,26 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SqliteBrowser.App.Views.DdlEditorDialog"
+        Width="640" Height="420"
+        WindowStartupLocation="CenterOwner"
+        Title="Edit SQL">
+  <Grid RowDefinitions="Auto,*,Auto" Margin="16">
+    <TextBlock x:Name="TitleText" Grid.Row="0" FontWeight="Bold" FontSize="16" Margin="0,0,0,12" />
+    <TextBox x:Name="SqlEditor"
+             AutomationProperties.AutomationId="DdlEditorDialog.SqlEditor"
+             Grid.Row="1"
+             AcceptsReturn="True"
+             AcceptsTab="True"
+             TextWrapping="NoWrap"
+             FontFamily="Cascadia Mono,Consolas,Menlo,monospace"
+             VerticalContentAlignment="Top" />
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,16,0,0">
+      <Button x:Name="CancelButton"
+              AutomationProperties.AutomationId="DdlEditorDialog.CancelButton"
+              Content="Cancel" Click="OnCancelClick" />
+      <Button x:Name="ExecuteButton"
+              AutomationProperties.AutomationId="DdlEditorDialog.ExecuteButton"
+              Content="Execute" Click="OnExecuteClick" IsDefault="True" />
+    </StackPanel>
+  </Grid>
+</Window>
