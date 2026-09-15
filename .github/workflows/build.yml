@@ -90,7 +90,6 @@ jobs:
 
   publish:
     name: Publish ${{ matrix.rid }}
-    if: github.event_name != 'pull_request'
     needs: test
     strategy:
       fail-fast: false
