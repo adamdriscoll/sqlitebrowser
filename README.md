@@ -81,8 +81,8 @@ dotnet publish src\SqliteBrowser.App\SqliteBrowser.App.csproj `
 
 Replace `win-x64` with `win-arm64`, `linux-x64`, `linux-arm64`, `osx-x64`, or
 `osx-arm64`. GitHub Actions builds and tests every change and publishes ZIP
-artifacts for all six targets on pushes to `master`; version tags also create a
-GitHub release.
+artifacts for all six targets on pull requests and pushes to `master`; version
+tags also create a GitHub release.
 
 ## Solution layout
 
