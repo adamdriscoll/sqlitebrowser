@@ -92,7 +92,8 @@ GitHub release.
 | `tests/SqliteBrowser.Core.Tests` | Unit and database integration tests |
 | `tests/SqliteBrowser.App.Tests` | Avalonia headless UI tests |
 
-Feature-parity work is tracked in [ROADMAP.md](ROADMAP.md).
+Feature-parity work is tracked in
+[GitHub Issues](https://github.com/adamdriscoll/sqlitebrowser/issues).
 
 ## License
 
