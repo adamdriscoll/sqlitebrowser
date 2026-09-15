@@ -31,7 +31,7 @@ production-ready.
 - SLNX solution format and unified GitHub Actions workflow
 - Dual MPL-2.0/GPL-3.0-or-later licensing and About dialog notices
 
-The current automated suite contains 104 core tests and 16 Avalonia headless UI
+The current automated suite contains 104 core tests and 17 Avalonia headless UI
 tests.
 
 ## Remaining parity work
