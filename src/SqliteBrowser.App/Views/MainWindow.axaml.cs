@@ -97,6 +97,22 @@ public partial class MainWindow : Window
 
     private void OnExitClick(object? sender, RoutedEventArgs e) => ViewModel?.ExitCommand.Execute(null);
 
+    private async void OnEditValueClick(object? sender, RoutedEventArgs e) => await EditCurrentValueAsync().ConfigureAwait(true);
+
+    private async void OnBrowseDataGridDoubleTapped(object? sender, TappedEventArgs e)
+    {
+        e.Handled = true;
+        await EditCurrentValueAsync().ConfigureAwait(true);
+    }
+
+    private Task EditCurrentValueAsync()
+    {
+        string? columnName = BrowseDataGrid.CurrentColumn?.Header?.ToString();
+        return ViewModel is { } vm && !string.IsNullOrEmpty(columnName)
+            ? vm.BrowseData.EditValueAsync(columnName)
+            : Task.CompletedTask;
+    }
+
     private void OnTitleBarPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (e.ClickCount == 2)

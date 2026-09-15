@@ -31,7 +31,7 @@ production-ready.
 - SLNX solution format and unified GitHub Actions workflow
 - Dual MPL-2.0/GPL-3.0-or-later licensing and About dialog notices
 
-The current automated suite contains 104 core tests and 14 Avalonia headless UI
+The current automated suite contains 104 core tests and 17 Avalonia headless UI
 tests.
 
 ## Remaining parity work
@@ -51,7 +51,7 @@ Replace the current raw DDL editor with visual table and index designers.
 **Complete when:** common schema changes require no handwritten SQL and failed
 migrations leave the original schema and data intact.
 
-### 2. Rich value editor
+### 2. Rich value editor (completed)
 
 Add a dedicated cell inspector/editor.
 
@@ -61,6 +61,10 @@ Add a dedicated cell inspector/editor.
 - JSON format, minify, and validation
 - Import/export individual BLOB values
 - Explicit SQL `NULL` handling
+
+Implemented as a storage-class-aware cell inspector opened from Browse Data. BLOB
+columns remain protected from unsafe inline text edits while the dedicated editor
+supports hexadecimal editing, image preview, and individual-value import/export.
 
 **Complete when:** text, numeric, null, JSON, image, and arbitrary binary values
 can be safely inspected and edited without changing their SQLite storage class
@@ -168,7 +172,7 @@ query, save, and close workflows in real windows on Windows and macOS.
 ## Suggested implementation order
 
 1. Visual schema designers and migration safety
-2. Rich value editor
+2. Rich value editor (completed)
 3. Multi-tab SQL workspace
 4. Project files
 5. Attached databases and provider capability reporting

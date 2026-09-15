@@ -31,6 +31,9 @@ public interface IUserInteractionService
     /// </summary>
     Task<string?> EditDdlAsync(string title, string initialSql);
 
+    /// <summary>Inspects or edits one cell value without implicitly changing its SQLite storage class.</summary>
+    Task<ValueEditResult?> EditValueAsync(string title, object? initialValue, bool isReadOnly);
+
     /// <summary>Prompts for CSV import options (destination table name, delimiter, header, type inference).</summary>
     Task<CsvImportPrompt?> PromptCsvImportOptionsAsync(string suggestedTableName);
 

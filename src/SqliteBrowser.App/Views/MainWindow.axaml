@@ -199,7 +199,7 @@
                     AutomationProperties.AutomationId="BrowseData.RefreshButton" />
           </Grid>
 
-          <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto" Margin="0,6,0,0">
+          <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto" Margin="0,6,0,0">
             <Button Grid.Column="0" Content="|&lt;" Command="{Binding BrowseData.FirstPageCommand}" AutomationProperties.AutomationId="BrowseData.FirstPageButton" />
             <Button Grid.Column="1" Content="&lt;" Command="{Binding BrowseData.PreviousPageCommand}" AutomationProperties.AutomationId="BrowseData.PreviousPageButton" />
             <TextBlock Grid.Column="2" Text="{Binding BrowseData.PageDescription}" VerticalAlignment="Center" Margin="8,0" AutomationProperties.AutomationId="BrowseData.PageDescription" />
@@ -211,8 +211,11 @@
                        AutomationProperties.AutomationId="BrowseData.RowCount" />
             <NumericUpDown Grid.Column="6" Value="{Binding BrowseData.PageSize, Mode=TwoWay}" Minimum="1" Maximum="10000" Width="120"
                             AutomationProperties.AutomationId="BrowseData.PageSizeBox" />
-            <Button Grid.Column="7" Content="Add Row" Command="{Binding BrowseData.AddRowCommand}" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseData.AddRowButton" />
-            <Button Grid.Column="8" Content="Delete Row" Command="{Binding BrowseData.DeleteRowCommand}" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseData.DeleteRowButton" />
+            <Button Grid.Column="7" Content="Edit Value..." Click="OnEditValueClick"
+                    IsEnabled="{Binding BrowseData.CanInspectSelectedValue}" Margin="8,0,0,0"
+                    AutomationProperties.AutomationId="BrowseData.EditValueButton" />
+            <Button Grid.Column="8" Content="Add Row" Command="{Binding BrowseData.AddRowCommand}" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseData.AddRowButton" />
+            <Button Grid.Column="9" Content="Delete Row" Command="{Binding BrowseData.DeleteRowCommand}" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseData.DeleteRowButton" />
           </Grid>
 
           <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
@@ -224,6 +227,7 @@
                     SelectedItem="{Binding BrowseData.SelectedRow, Mode=TwoWay}"
                     IsReadOnly="{Binding BrowseData.IsTableReadOnly}"
                     AutoGenerateColumns="False"
+                    DoubleTapped="OnBrowseDataGridDoubleTapped"
                     AutomationProperties.AutomationId="BrowseData.Grid" />
         </DockPanel>
       </TabItem>

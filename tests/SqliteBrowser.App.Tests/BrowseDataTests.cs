@@ -5,6 +5,7 @@ using Avalonia.Headless.XUnit;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using SqliteBrowser.App.Converters;
+using SqliteBrowser.App.Models;
 using SqliteBrowser.App.ViewModels;
 using SqliteBrowser.App.Views;
 
@@ -13,6 +14,25 @@ namespace SqliteBrowser.App.Tests;
 /// <summary>Exercises Browse Data: switching tables and paging through a real temporary database.</summary>
 public class BrowseDataTests
 {
+    [Fact]
+    public void ValueEditorDocument_PreservesTypesAndSupportsJsonHexAndImages()
+    {
+        Assert.IsType<long>(new ValueEditorDocument(42L).BuildValue());
+        Assert.IsType<double>(new ValueEditorDocument(1.5).BuildValue());
+        Assert.Same(DBNull.Value, new ValueEditorDocument(DBNull.Value).BuildValue());
+
+        var json = new ValueEditorDocument("""{"name":"Ada","active":true}""");
+        Assert.Contains(Environment.NewLine, json.FormatJson(indented: true));
+        Assert.Equal("""{"name":"Ada","active":true}""", json.FormatJson(indented: false));
+
+        var blob = new ValueEditorDocument(new byte[] { 0x01, 0xA2, 0xFF });
+        blob.HexText = "01 a2\nff";
+        Assert.Equal(new byte[] { 0x01, 0xA2, 0xFF }, blob.GetBlobBytes());
+        Assert.Throws<FormatException>(() => { blob.HexText = "ABC"; blob.GetBlobBytes(); });
+        Assert.True(ValueEditorDocument.IsSupportedImage(
+            new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }));
+    }
+
     [AvaloniaFact]
     public async Task LoadedRows_AreRenderedInGridCells()
     {
@@ -196,6 +216,49 @@ public class BrowseDataTests
             // The underlying byte[] must still be completely untouched after all of the above.
             Assert.Same(original, viewModel.BrowseData.RowsView![0]["payload"]);
             Assert.Equal(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0xFF }, (byte[])viewModel.BrowseData.RowsView![0]["payload"]);
+        }
+        finally
+        {
+            TestDatabaseFactory.Delete(path);
+        }
+    }
+
+    [AvaloniaFact]
+    public async Task RichValueEditor_CanReplaceBlobAndSetNullWithoutChangingTypes()
+    {
+        string path = await TestDatabaseFactory.CreateBlobSampleDatabaseAsync();
+        try
+        {
+            var ui = new FakeUserInteractionService();
+            var viewModel = new MainWindowViewModel(ui);
+            var window = new MainWindow { DataContext = viewModel };
+            window.Show();
+
+            await viewModel.OpenDatabaseAsync(path);
+            viewModel.BrowseData.SelectedTable = viewModel.BrowseData.Tables.Single(t => t.Name == "assets");
+            await TestAsync.WaitUntilAsync(() => viewModel.BrowseData.RowsView is not null);
+            viewModel.BrowseData.SelectedRow = viewModel.BrowseData.RowsView![0];
+
+            ui.NextValueEditResult = new ValueEditResult(new byte[] { 0xCA, 0xFE });
+            await viewModel.BrowseData.EditValueAsync("payload");
+            Assert.Equal(new byte[] { 0xCA, 0xFE }, Assert.IsType<byte[]>(viewModel.BrowseData.SelectedRow["payload"]));
+            await viewModel.BrowseData.SaveChangesCommand.ExecuteAsync(null);
+
+            viewModel.ExecuteSql.SqlText = "SELECT typeof(payload) AS storage_type, hex(payload) AS value FROM assets;";
+            await viewModel.ExecuteSql.ExecuteCommand.ExecuteAsync(null);
+            Assert.Equal("blob", viewModel.ExecuteSql.ResultsView![0]["storage_type"]);
+            Assert.Equal("CAFE", viewModel.ExecuteSql.ResultsView[0]["value"]);
+
+            viewModel.BrowseData.SelectedRow = viewModel.BrowseData.RowsView![0];
+            ui.NextValueEditResult = new ValueEditResult(DBNull.Value);
+            await viewModel.BrowseData.EditValueAsync("payload");
+            Assert.Same(DBNull.Value, viewModel.BrowseData.SelectedRow["payload"]);
+            Assert.True(viewModel.BrowseData.HasPendingEdits);
+            await viewModel.BrowseData.SaveChangesCommand.ExecuteAsync(null);
+
+            viewModel.ExecuteSql.SqlText = "SELECT typeof(payload) AS storage_type FROM assets;";
+            await viewModel.ExecuteSql.ExecuteCommand.ExecuteAsync(null);
+            Assert.Equal("null", viewModel.ExecuteSql.ResultsView![0]["storage_type"]);
         }
         finally
         {

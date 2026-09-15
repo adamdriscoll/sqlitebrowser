@@ -17,3 +17,16 @@ public enum DirtyCloseChoice
 
 /// <summary>The result of the CSV import options prompt: the destination table plus parse/import options.</summary>
 public sealed record CsvImportPrompt(string TableName, CsvImportOptions Options);
+
+/// <summary>The SQLite storage class selected in the rich value editor.</summary>
+public enum SqliteStorageClass
+{
+    Null,
+    Integer,
+    Real,
+    Text,
+    Blob,
+}
+
+/// <summary>A confirmed value edit. The wrapper distinguishes cancellation from an SQL NULL value.</summary>
+public sealed record ValueEditResult(object Value);

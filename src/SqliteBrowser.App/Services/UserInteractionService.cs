@@ -45,6 +45,9 @@ public sealed class UserInteractionService : IUserInteractionService
 
     public Task<string?> EditDdlAsync(string title, string initialSql) => DdlEditorDialog.ShowAsync(OwnerWindow, title, initialSql);
 
+    public Task<ValueEditResult?> EditValueAsync(string title, object? initialValue, bool isReadOnly) =>
+        ValueEditorDialog.ShowAsync(OwnerWindow, title, initialValue, isReadOnly);
+
     public Task<CsvImportPrompt?> PromptCsvImportOptionsAsync(string suggestedTableName) =>
         CsvImportDialog.ShowAsync(OwnerWindow, suggestedTableName);
 
