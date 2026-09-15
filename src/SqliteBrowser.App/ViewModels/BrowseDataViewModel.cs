@@ -2,6 +2,7 @@
 using System.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SqliteBrowser.App.Services;
 using SqliteBrowser.Core.Models;
 using SqliteBrowser.Core.Services;
 
@@ -14,8 +15,14 @@ namespace SqliteBrowser.App.ViewModels;
 /// </summary>
 public sealed partial class BrowseDataViewModel : ViewModelBase
 {
+    private readonly IUserInteractionService _ui;
     private DatabaseSession? _session;
     private TablePage? _currentPage;
+
+    public BrowseDataViewModel(IUserInteractionService ui)
+    {
+        _ui = ui;
+    }
 
     public ObservableCollection<SchemaObjectViewModel> Tables { get; } = [];
 
@@ -80,7 +87,11 @@ public sealed partial class BrowseDataViewModel : ViewModelBase
 
     partial void OnSelectedTableChanged(SchemaObjectViewModel? value) => _ = LoadPageAsync(resetOffset: true);
 
-    partial void OnSelectedRowChanged(DataRowView? value) => DeleteRowCommand.NotifyCanExecuteChanged();
+    partial void OnSelectedRowChanged(DataRowView? value)
+    {
+        DeleteRowCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(CanInspectSelectedValue));
+    }
 
     partial void OnHasPendingEditsChanged(bool value) => SaveChangesCommand.NotifyCanExecuteChanged();
 
@@ -237,6 +248,31 @@ public sealed partial class BrowseDataViewModel : ViewModelBase
 
     /// <summary>Discards in-memory edits by reloading the current page from the database.</summary>
     public Task DiscardChangesAsync() => LoadPageAsync(resetOffset: false);
+
+    public bool CanInspectSelectedValue => SelectedRow is not null;
+
+    /// <summary>Opens the typed inspector for one selected cell and applies a confirmed edit to the in-memory row.</summary>
+    public async Task EditValueAsync(string columnName)
+    {
+        if (SelectedRow is null || _currentPage is null || !_currentPage.Data.Columns.Contains(columnName))
+        {
+            return;
+        }
+
+        object currentValue = SelectedRow[columnName];
+        var result = await _ui.EditValueAsync(
+            $"Value: {columnName}",
+            currentValue,
+            IsTableReadOnly).ConfigureAwait(true);
+
+        if (result is null || IsTableReadOnly)
+        {
+            return;
+        }
+
+        SelectedRow[columnName] = result.Value;
+        HasPendingEdits = true;
+    }
 
     /// <summary>The currently selected table/view's schema and name, or <c>null</c> if none is selected.</summary>
     public (string Schema, string TableName)? CurrentTable => SelectedTable is { } t ? (t.Schema, t.Name) : null;

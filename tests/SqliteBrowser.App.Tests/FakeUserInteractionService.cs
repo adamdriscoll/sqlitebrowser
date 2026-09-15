@@ -22,6 +22,7 @@ public sealed class FakeUserInteractionService : IUserInteractionService
     public string? NextSaveJsonPath { get; set; }
     public string? NextSaveSqlDumpPath { get; set; }
     public string? NextDdlResult { get; set; }
+    public ValueEditResult? NextValueEditResult { get; set; }
     public CsvImportPrompt? NextCsvImportPrompt { get; set; }
     public DirtyCloseChoice NextDirtyChoice { get; set; } = DirtyCloseChoice.Cancel;
     public bool NextConfirmResult { get; set; } = true;
@@ -60,6 +61,12 @@ public sealed class FakeUserInteractionService : IUserInteractionService
     {
         Calls.Add($"EditDdl:{title}");
         return Task.FromResult(NextDdlResult);
+    }
+
+    public Task<ValueEditResult?> EditValueAsync(string title, object? initialValue, bool isReadOnly)
+    {
+        Calls.Add($"EditValue:{title}:{isReadOnly}");
+        return Task.FromResult(NextValueEditResult);
     }
 
     public Task<CsvImportPrompt?> PromptCsvImportOptionsAsync(string suggestedTableName)

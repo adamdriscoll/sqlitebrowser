@@ -1,6 +1,7 @@
 using System.Data;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using SqliteBrowser.App.ViewModels;
 using SqliteBrowser.App.Converters;
@@ -96,6 +97,22 @@ public partial class MainWindow : Window
     }
 
     private void OnExitClick(object? sender, RoutedEventArgs e) => ViewModel?.ExitCommand.Execute(null);
+
+    private async void OnEditValueClick(object? sender, RoutedEventArgs e) => await EditCurrentValueAsync().ConfigureAwait(true);
+
+    private async void OnBrowseDataGridDoubleTapped(object? sender, TappedEventArgs e)
+    {
+        e.Handled = true;
+        await EditCurrentValueAsync().ConfigureAwait(true);
+    }
+
+    private Task EditCurrentValueAsync()
+    {
+        string? columnName = BrowseDataGrid.CurrentColumn?.Header?.ToString();
+        return ViewModel is { } vm && !string.IsNullOrEmpty(columnName)
+            ? vm.BrowseData.EditValueAsync(columnName)
+            : Task.CompletedTask;
+    }
 
     /// <summary>
     /// Rebuilds <paramref name="grid"/>'s columns from the schema of the <see cref="DataTable"/> backing

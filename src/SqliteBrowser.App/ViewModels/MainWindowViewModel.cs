@@ -27,6 +27,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(IUserInteractionService ui)
     {
         _ui = ui;
+        BrowseData = new BrowseDataViewModel(ui);
         Structure.OnMutated = RefreshDirtyState;
         BrowseData.OnMutated = RefreshDirtyState;
         ExecuteSql.OnMutated = RefreshDirtyState;
@@ -35,7 +36,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public StructureViewModel Structure { get; } = new();
 
-    public BrowseDataViewModel BrowseData { get; } = new();
+    public BrowseDataViewModel BrowseData { get; }
 
     public ExecuteSqlViewModel ExecuteSql { get; } = new();
 
