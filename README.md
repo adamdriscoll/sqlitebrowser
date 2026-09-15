@@ -2,7 +2,8 @@
 
 SQLite Browser is a cross-platform desktop application for creating, inspecting,
 querying, and editing SQLite databases. This fork is a clean C# and
-[Avalonia](https://avaloniaui.net/) port of DB Browser for SQLite.
+[Avalonia](https://avaloniaui.net/) port of
+[DB Browser for SQLite](https://github.com/sqlitebrowser/sqlitebrowser).
 
 > [!IMPORTANT]
 > The database provider is
