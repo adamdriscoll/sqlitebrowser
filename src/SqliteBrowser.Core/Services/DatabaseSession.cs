@@ -567,7 +567,18 @@ public sealed class DatabaseSession : IAsyncDisposable
         }
 
         string qualified = SqlIdentifier.QuoteQualified(schema, tableName);
-        var columns = await GetColumnsAsync(schema, tableName, ct).ConfigureAwait(false);
+        IReadOnlyList<ColumnDefinition> columns;
+        try
+        {
+            columns = await GetColumnsAsync(schema, tableName, ct).ConfigureAwait(false);
+        }
+        catch (SqliteException ex) when (
+            ex.SqliteErrorCode == 1 &&
+            ex.Message.Contains("no such table:", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException($"Table or view '{schema}.{tableName}' was not found.", ex);
+        }
+
         if (columns.Count == 0)
         {
             throw new InvalidOperationException($"Table or view '{schema}.{tableName}' was not found.");
