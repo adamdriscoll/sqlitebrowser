@@ -1,6 +1,6 @@
 using System.Data;
 using Avalonia.Controls;
-using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using SqliteBrowser.App.ViewModels;
 using SqliteBrowser.App.Converters;
@@ -97,6 +97,30 @@ public partial class MainWindow : Window
 
     private void OnExitClick(object? sender, RoutedEventArgs e) => ViewModel?.ExitCommand.Execute(null);
 
+    private void OnTitleBarPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (e.ClickCount == 2)
+        {
+            ToggleMaximized();
+            return;
+        }
+
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            BeginMoveDrag(e);
+        }
+    }
+
+    private void OnMinimizeClick(object? sender, RoutedEventArgs e) =>
+        WindowState = WindowState.Minimized;
+
+    private void OnMaximizeClick(object? sender, RoutedEventArgs e) => ToggleMaximized();
+
+    private void OnCloseClick(object? sender, RoutedEventArgs e) => Close();
+
+    private void ToggleMaximized() =>
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
     /// <summary>
     /// Rebuilds <paramref name="grid"/>'s columns from the schema of the <see cref="DataTable"/> backing
     /// <paramref name="view"/>, hiding the synthetic rowid identity column and formatting NULL/BLOB cells
@@ -132,10 +156,9 @@ public partial class MainWindow : Window
                 continue;
             }
 
-            grid.Columns.Add(new DataGridTextColumn
+            grid.Columns.Add(new DataRowTextColumn(column.ColumnName)
             {
                 Header = column.ColumnName,
-                Binding = new Binding($"[{column.ColumnName}]") { Converter = CellDisplayConverter.Instance },
                 IsReadOnly = isReadOnlyColumn(column.ColumnName),
             });
         }

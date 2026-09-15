@@ -5,11 +5,47 @@
         x:DataType="vm:MainWindowViewModel"
         Title="{Binding WindowTitle}"
         Width="1200" Height="800"
-        MinWidth="900" MinHeight="600">
-  <DockPanel>
+        MinWidth="900" MinHeight="600"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="46">
+  <DockPanel Background="{DynamicResource AppBackgroundBrush}">
+
+    <!-- Integrated title bar -->
+    <Border DockPanel.Dock="Top" Classes="titleBar" Height="46"
+            PointerPressed="OnTitleBarPointerPressed"
+            AutomationProperties.AutomationId="TitleBar">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Border Grid.Column="0" Width="24" Height="24" Margin="12,0,10,0"
+                CornerRadius="5" Background="{DynamicResource SystemAccentColor}"
+                VerticalAlignment="Center">
+          <TextBlock Text="DB" Foreground="White" FontSize="10" FontWeight="Bold"
+                     HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10"
+                    VerticalAlignment="Center" IsHitTestVisible="False">
+          <TextBlock Text="SQLite Browser" FontWeight="SemiBold" />
+          <TextBlock Text="{Binding StatusPathText}" Foreground="{DynamicResource AppMutedTextBrush}"
+                     TextTrimming="CharacterEllipsis" MaxWidth="620" />
+          <Border Background="{DynamicResource SystemAccentColor}" CornerRadius="8"
+                  Padding="7,2" IsVisible="{Binding IsReadOnly}">
+            <TextBlock Text="Read-only" Foreground="White" FontSize="11" />
+          </Border>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal">
+          <Button Classes="caption" Content="&#xE921;" Click="OnMinimizeClick"
+                  AutomationProperties.AutomationId="TitleBar.Minimize" />
+          <Button Classes="caption" Content="&#xE922;" Click="OnMaximizeClick"
+                  AutomationProperties.AutomationId="TitleBar.Maximize" />
+          <Button Classes="caption close" Content="&#xE8BB;" Click="OnCloseClick"
+                  AutomationProperties.AutomationId="TitleBar.Close" />
+        </StackPanel>
+      </Grid>
+    </Border>
 
     <!-- Menu -->
-    <Menu DockPanel.Dock="Top" AutomationProperties.AutomationId="MainMenu">
+    <Menu DockPanel.Dock="Top" AutomationProperties.AutomationId="MainMenu"
+          Background="{DynamicResource AppSurfaceBrush}" Padding="6,2">
       <MenuItem Header="_File">
         <MenuItem Header="_New Database..." Command="{Binding NewCommand}" HotKey="Ctrl+N" AutomationProperties.AutomationId="Menu.File.New" />
         <MenuItem Header="_Open Database..." Command="{Binding OpenCommand}" HotKey="Ctrl+O" AutomationProperties.AutomationId="Menu.File.Open" />
@@ -56,21 +92,25 @@
     </Menu>
 
     <!-- Toolbar -->
-    <Border DockPanel.Dock="Top" Padding="6" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource SystemBaseLowColor}">
-      <StackPanel Orientation="Horizontal" Spacing="6">
-        <Button Content="New" Command="{Binding NewCommand}" AutomationProperties.AutomationId="Toolbar.New" />
-        <Button Content="Open" Command="{Binding OpenCommand}" AutomationProperties.AutomationId="Toolbar.Open" />
-        <Button Content="Open Read-Only" Command="{Binding OpenReadOnlyCommand}" AutomationProperties.AutomationId="Toolbar.OpenReadOnly" />
-        <Button Content="Save As" Command="{Binding SaveAsCommand}" AutomationProperties.AutomationId="Toolbar.SaveAs" />
-        <Button Content="Close" Command="{Binding CloseCommand}" AutomationProperties.AutomationId="Toolbar.Close" />
-        <Separator />
-        <Button Content="Write Changes" Command="{Binding CommitCommand}" AutomationProperties.AutomationId="Toolbar.Commit" />
-        <Button Content="Revert Changes" Command="{Binding RevertCommand}" AutomationProperties.AutomationId="Toolbar.Revert" />
-      </StackPanel>
+    <Border DockPanel.Dock="Top" Classes="commandBar" Padding="12,8">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
+          <Button Classes="command" Content="New" Command="{Binding NewCommand}" AutomationProperties.AutomationId="Toolbar.New" />
+          <Button Classes="command primary" Content="Open" Command="{Binding OpenCommand}" AutomationProperties.AutomationId="Toolbar.Open" />
+          <Button Classes="command" Content="Open read-only" Command="{Binding OpenReadOnlyCommand}" AutomationProperties.AutomationId="Toolbar.OpenReadOnly" />
+          <Separator Classes="commandSeparator" />
+          <Button Classes="command" Content="Save a copy" Command="{Binding SaveAsCommand}" AutomationProperties.AutomationId="Toolbar.SaveAs" />
+          <Button Classes="command" Content="Close" Command="{Binding CloseCommand}" AutomationProperties.AutomationId="Toolbar.Close" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+          <Button Classes="command primary" Content="Write changes" Command="{Binding CommitCommand}" AutomationProperties.AutomationId="Toolbar.Commit" />
+          <Button Classes="command" Content="Revert" Command="{Binding RevertCommand}" AutomationProperties.AutomationId="Toolbar.Revert" />
+        </StackPanel>
+      </Grid>
     </Border>
 
     <!-- Status bar -->
-    <Border DockPanel.Dock="Bottom" Padding="8,4" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SystemBaseLowColor}">
+    <Border DockPanel.Dock="Bottom" Classes="statusBar" Padding="12,7">
       <Grid ColumnDefinitions="Auto,*,Auto,Auto" AutomationProperties.AutomationId="StatusBar">
         <TextBlock Grid.Column="0" Text="{Binding StatusPathText}" AutomationProperties.AutomationId="StatusBar.Path" Margin="0,0,16,0" />
         <TextBlock Grid.Column="1" Text="{Binding ErrorMessage}" Foreground="Red" IsVisible="{Binding HasError}"
@@ -84,7 +124,7 @@
     </Border>
 
     <!-- Main content -->
-    <TabControl AutomationProperties.AutomationId="MainTabs">
+    <TabControl Classes="workspace" AutomationProperties.AutomationId="MainTabs">
 
       <!-- Structure tab -->
       <TabItem Header="Structure" AutomationProperties.AutomationId="Tab.Structure">
@@ -165,6 +205,10 @@
             <TextBlock Grid.Column="2" Text="{Binding BrowseData.PageDescription}" VerticalAlignment="Center" Margin="8,0" AutomationProperties.AutomationId="BrowseData.PageDescription" />
             <Button Grid.Column="3" Content="&gt;" Command="{Binding BrowseData.NextPageCommand}" AutomationProperties.AutomationId="BrowseData.NextPageButton" />
             <Button Grid.Column="4" Content="&gt;|" Command="{Binding BrowseData.LastPageCommand}" AutomationProperties.AutomationId="BrowseData.LastPageButton" />
+            <TextBlock Grid.Column="5" Text="{Binding BrowseData.RowCountDescription}"
+                       HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0"
+                       Foreground="{DynamicResource AppMutedTextBrush}"
+                       AutomationProperties.AutomationId="BrowseData.RowCount" />
             <NumericUpDown Grid.Column="6" Value="{Binding BrowseData.PageSize, Mode=TwoWay}" Minimum="1" Maximum="10000" Width="120"
                             AutomationProperties.AutomationId="BrowseData.PageSizeBox" />
             <Button Grid.Column="7" Content="Add Row" Command="{Binding BrowseData.AddRowCommand}" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseData.AddRowButton" />

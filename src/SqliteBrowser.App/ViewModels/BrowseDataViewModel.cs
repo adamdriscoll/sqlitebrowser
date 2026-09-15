@@ -57,6 +57,12 @@ public sealed partial class BrowseDataViewModel : ViewModelBase
             ? "0 rows"
             : $"Rows {Offset + 1}\u2013{Math.Min(Offset + PageSize, TotalRows)} of {TotalRows}";
 
+    public string RowCountDescription => _currentPage is null
+        ? "No rows loaded"
+        : TotalRows == 1
+            ? "1 row total"
+            : $"{TotalRows:N0} rows total";
+
     public bool CanGoFirst => Offset > 0;
 
     public bool CanGoPrevious => Offset > 0;
@@ -68,6 +74,7 @@ public sealed partial class BrowseDataViewModel : ViewModelBase
     private void NotifyPagingChanged()
     {
         OnPropertyChanged(nameof(PageDescription));
+        OnPropertyChanged(nameof(RowCountDescription));
         OnPropertyChanged(nameof(CanGoFirst));
         OnPropertyChanged(nameof(CanGoPrevious));
         OnPropertyChanged(nameof(CanGoNext));
