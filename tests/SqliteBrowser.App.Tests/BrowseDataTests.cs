@@ -2,6 +2,8 @@
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Headless.XUnit;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using SqliteBrowser.App.Converters;
 using SqliteBrowser.App.ViewModels;
 using SqliteBrowser.App.Views;
@@ -11,6 +13,50 @@ namespace SqliteBrowser.App.Tests;
 /// <summary>Exercises Browse Data: switching tables and paging through a real temporary database.</summary>
 public class BrowseDataTests
 {
+    [AvaloniaFact]
+    public async Task LoadedRows_AreRenderedInGridCells()
+    {
+        string path = await TestDatabaseFactory.CreateSampleDatabaseAsync();
+        try
+        {
+            var viewModel = new MainWindowViewModel(new FakeUserInteractionService());
+            var window = new MainWindow { DataContext = viewModel };
+            window.Show();
+            window.SelectTab("Tab.BrowseData");
+
+            await viewModel.OpenDatabaseAsync(path);
+            await TestAsync.WaitUntilAsync(() => viewModel.BrowseData.RowsView?.Count == 3);
+            Dispatcher.UIThread.RunJobs();
+
+            var grid = (DataGrid)window.FindByAutomationId("BrowseData.Grid");
+            string?[] renderedText = grid.GetVisualDescendants()
+                .OfType<TextBlock>()
+                .Select(text => text.Text)
+                .ToArray();
+
+            Assert.Contains("Ada", renderedText);
+            Assert.Contains("Grace", renderedText);
+            Assert.Contains("Linus", renderedText);
+
+            grid.SelectedItem = viewModel.BrowseData.RowsView![0];
+            grid.CurrentColumn = grid.Columns.Single(column => Equals(column.Header, "name"));
+            Assert.True(grid.BeginEdit());
+            Dispatcher.UIThread.RunJobs();
+
+            var editor = grid.GetVisualDescendants()
+                .OfType<TextBox>()
+                .Single(textBox => textBox.Name == "CellTextBox");
+            editor.Text = "Katherine";
+            Assert.True(grid.CommitEdit());
+
+            Assert.Equal("Katherine", viewModel.BrowseData.RowsView[0]["name"]);
+        }
+        finally
+        {
+            TestDatabaseFactory.Delete(path);
+        }
+    }
+
     [AvaloniaFact]
     public async Task SwitchingTableAndPaging_UpdatesGridAndPageDescription()
     {
@@ -39,6 +85,7 @@ public class BrowseDataTests
 
             Assert.Equal(3, viewModel.BrowseData.TotalRows);
             Assert.Equal("Rows 1\u20132 of 3", viewModel.BrowseData.PageDescription);
+            Assert.Equal("3 rows total", viewModel.BrowseData.RowCountDescription);
             Assert.True(viewModel.BrowseData.CanGoNext);
             Assert.False(viewModel.BrowseData.CanGoPrevious);
 
@@ -54,6 +101,7 @@ public class BrowseDataTests
             viewModel.BrowseData.SelectedTable = viewModel.BrowseData.Tables.Single(t => t.Name == "tags");
             await TestAsync.WaitUntilAsync(() => viewModel.BrowseData.TotalRows == 2);
             Assert.Equal("Rows 1\u20132 of 2", viewModel.BrowseData.PageDescription);
+            Assert.Equal("2 rows total", viewModel.BrowseData.RowCountDescription);
         }
         finally
         {

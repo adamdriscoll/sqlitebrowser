@@ -6,10 +6,105 @@
   <Application.Styles>
     <FluentTheme />
     <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+    <Style Selector="Window">
+      <Setter Property="FontFamily" Value="Inter,Segoe UI,sans-serif" />
+      <Setter Property="Background" Value="{DynamicResource AppBackgroundBrush}" />
+    </Style>
+    <Style Selector="Border.titleBar">
+      <Setter Property="Background" Value="{DynamicResource AppTitleBarBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AppBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </Style>
+    <Style Selector="Border.commandBar">
+      <Setter Property="Background" Value="{DynamicResource AppSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AppBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </Style>
+    <Style Selector="Border.statusBar">
+      <Setter Property="Background" Value="{DynamicResource AppSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AppBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,1,0,0" />
+    </Style>
+    <Style Selector="Button.command">
+      <Setter Property="MinHeight" Value="34" />
+      <Setter Property="Padding" Value="12,6" />
+      <Setter Property="CornerRadius" Value="4" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{DynamicResource SystemAccentColor}" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.caption">
+      <Setter Property="Width" Value="46" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="FontFamily" Value="Segoe Fluent Icons,Segoe MDL2 Assets" />
+      <Setter Property="FontSize" Value="10" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}">
+            <ContentPresenter Content="{TemplateBinding Content}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.caption.close:pointerover">
+      <Setter Property="Background" Value="#C42B1C" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Separator.commandSeparator">
+      <Setter Property="Width" Value="1" />
+      <Setter Property="Height" Value="22" />
+      <Setter Property="Margin" Value="4,0" />
+      <Setter Property="Background" Value="{DynamicResource AppBorderBrush}" />
+    </Style>
+    <Style Selector="TabControl.workspace">
+      <Setter Property="Margin" Value="12,8,12,10" />
+      <Setter Property="Background" Value="{DynamicResource AppSurfaceBrush}" />
+    </Style>
+    <Style Selector="TabItem">
+      <Setter Property="Padding" Value="16,9" />
+    </Style>
+    <Style Selector="DataGrid">
+      <Setter Property="BorderBrush" Value="{DynamicResource AppBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="DataGridCell TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource AppTextBrush}" />
+    </Style>
+    <Style Selector="DataGridCell TextBox">
+      <Setter Property="Foreground" Value="{DynamicResource AppTextBrush}" />
+    </Style>
   </Application.Styles>
 
   <Application.Resources>
-    <x:Double x:Key="ToolbarIconSize">16</x:Double>
+    <ResourceDictionary>
+      <x:Double x:Key="ToolbarIconSize">16</x:Double>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F3F3F3" />
+          <SolidColorBrush x:Key="AppTitleBarBrush" Color="#F3F3F3" />
+          <SolidColorBrush x:Key="AppSurfaceBrush" Color="#FBFBFB" />
+          <SolidColorBrush x:Key="AppBorderBrush" Color="#E5E5E5" />
+          <SolidColorBrush x:Key="AppTextBrush" Color="#1A1A1A" />
+          <SolidColorBrush x:Key="AppMutedTextBrush" Color="#666666" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="AppBackgroundBrush" Color="#202020" />
+          <SolidColorBrush x:Key="AppTitleBarBrush" Color="#202020" />
+          <SolidColorBrush x:Key="AppSurfaceBrush" Color="#272727" />
+          <SolidColorBrush x:Key="AppBorderBrush" Color="#3D3D3D" />
+          <SolidColorBrush x:Key="AppTextBrush" Color="#F5F5F5" />
+          <SolidColorBrush x:Key="AppMutedTextBrush" Color="#A6A6A6" />
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
   </Application.Resources>
 
 </Application>

@@ -114,6 +114,7 @@ public class MainWindowShellTests
 
         string[] expectedIds =
         [
+            "TitleBar", "TitleBar.Minimize", "TitleBar.Maximize", "TitleBar.Close",
             "MainMenu", "Menu.File.New", "Menu.File.Open", "Menu.File.Close", "Menu.Edit.Commit", "Menu.Edit.Revert",
             "Menu.Tools.Vacuum", "Menu.Help.About",
             "Toolbar.New", "Toolbar.Open", "Toolbar.Close",
@@ -121,7 +122,7 @@ public class MainWindowShellTests
             "MainTabs", "Tab.Structure", "Tab.BrowseData", "Tab.ExecuteSql", "Tab.Pragmas",
             "Structure.Tree", "Structure.RefreshButton", "Structure.DdlText", "Structure.ColumnsGrid",
             "BrowseData.TableSelector", "BrowseData.Grid", "BrowseData.FirstPageButton", "BrowseData.NextPageButton",
-            "BrowseData.PageSizeBox", "BrowseData.AddRowButton", "BrowseData.DeleteRowButton", "BrowseData.SaveChangesButton",
+            "BrowseData.RowCount", "BrowseData.PageSizeBox", "BrowseData.AddRowButton", "BrowseData.DeleteRowButton", "BrowseData.SaveChangesButton",
             "ExecuteSql.SqlTextBox", "ExecuteSql.ExecuteButton", "ExecuteSql.CancelButton", "ExecuteSql.ClearButton",
             "ExecuteSql.ResultsGrid", "ExecuteSql.CommandLogGrid",
             "Pragmas.RefreshButton", "Pragmas.List",
