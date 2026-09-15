@@ -46,6 +46,13 @@ To open a database at startup:
 dotnet run --project src\SqliteBrowser.App -- C:\path\to\database.db
 ```
 
+### Visual Studio Code
+
+Install the recommended C# extension, then use `Ctrl+Shift+B` to build or the
+**Run and Debug** view to start **SQLite Browser**. The **SQLite Browser: Open
+database** launch target prompts for a database path before starting. The
+**Tasks: Run Task** command also provides `test` and `clean` targets.
+
 ## Test
 
 ```powershell
