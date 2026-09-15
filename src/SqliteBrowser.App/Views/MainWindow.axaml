@@ -4,6 +4,7 @@
         x:Class="SqliteBrowser.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{Binding WindowTitle}"
+        Icon="/Assets/sqlite-browser.ico"
         Width="1200" Height="800"
         MinWidth="900" MinHeight="600"
         WindowDecorations="BorderOnly"

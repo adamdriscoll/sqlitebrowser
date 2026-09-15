@@ -21,6 +21,11 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <AssemblyName>SqliteBrowser.App</AssemblyName>
     <RootNamespace>SqliteBrowser.App</RootNamespace>
+    <ApplicationIcon>Assets\sqlite-browser.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
 
 </Project>
