@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SQLite Browser",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}${pathSeparator}src${pathSeparator}SqliteBrowser.App${pathSeparator}bin${pathSeparator}Debug${pathSeparator}net10.0${pathSeparator}SqliteBrowser.App.dll",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": "SQLite Browser: Open database",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}${pathSeparator}src${pathSeparator}SqliteBrowser.App${pathSeparator}bin${pathSeparator}Debug${pathSeparator}net10.0${pathSeparator}SqliteBrowser.App.dll",
+      "args": [
+        "${input:databasePath}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    }
+  ],
+  "inputs": [
+    {
+      "id": "databasePath",
+      "type": "promptString",
+      "description": "Absolute path to the SQLite database"
+    }
+  ]
+}

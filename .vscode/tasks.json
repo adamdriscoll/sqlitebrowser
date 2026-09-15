@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "SqliteBrowser.slnx"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "SqliteBrowser.slnx",
+        "--no-build"
+      ],
+      "dependsOn": "build",
+      "problemMatcher": "$msCompile",
+      "group": "test"
+    },
+    {
+      "label": "clean",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "SqliteBrowser.slnx"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
