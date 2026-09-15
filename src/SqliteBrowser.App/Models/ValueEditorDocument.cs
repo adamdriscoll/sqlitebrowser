@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
 
 namespace SqliteBrowser.App.Models;
@@ -42,10 +43,16 @@ public sealed class ValueEditorDocument
     public string FormatJson(bool indented)
     {
         using var document = JsonDocument.Parse(Text);
-        return JsonSerializer.Serialize(document.RootElement, new JsonSerializerOptions
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
         {
-            WriteIndented = indented,
-        });
+            Indented = indented,
+        }))
+        {
+            document.RootElement.WriteTo(writer);
+        }
+
+        return Encoding.UTF8.GetString(stream.ToArray());
     }
 
     public void ImportBlob(byte[] bytes)

@@ -102,7 +102,7 @@ jobs:
           - rid: linux-x64
             os: ubuntu-latest
           - rid: linux-arm64
-            os: ubuntu-latest
+            os: ubuntu-24.04-arm
           - rid: osx-x64
             os: macos-15-intel
           - rid: osx-arm64
@@ -117,17 +117,13 @@ jobs:
           cache: true
           cache-dependency-path: "**/*.csproj"
 
-      - name: Publish self-contained single file
+      - name: Publish Native AOT application
         shell: pwsh
         run: >
           dotnet publish src/SqliteBrowser.App/SqliteBrowser.App.csproj
           --configuration Release
           --runtime ${{ matrix.rid }}
           --self-contained true
-          -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtract=true
-          -p:EnableCompressionInSingleFile=true
-          -p:PublishTrimmed=false
           --output artifacts/${{ matrix.rid }}
 
       - name: Remove debug symbols

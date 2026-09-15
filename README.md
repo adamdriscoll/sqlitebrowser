@@ -64,25 +64,23 @@ The test suite includes core unit and integration tests plus in-memory Avalonia
 UI tests using `Avalonia.Headless.XUnit`. The headless tests exercise real
 controls, bindings, layout, and input without requiring a display server.
 
-## Publish a portable ZIP
+## Publish a native application
 
-Publish a self-contained single-file executable:
+The application is configured for self-contained Native AOT publishing:
 
 ```powershell
 dotnet publish src\SqliteBrowser.App\SqliteBrowser.App.csproj `
   --configuration Release `
   --runtime win-x64 `
-  --self-contained true `
-  -p:PublishSingleFile=true `
-  -p:IncludeNativeLibrariesForSelfExtract=true `
-  -p:EnableCompressionInSingleFile=true `
-  -p:PublishTrimmed=false
+  --self-contained true
 ```
 
 Replace `win-x64` with `win-arm64`, `linux-x64`, `linux-arm64`, `osx-x64`, or
-`osx-arm64`. GitHub Actions builds and tests every change and publishes ZIP
-artifacts for all six targets on pull requests and pushes to `master`; version
-tags also create a GitHub release.
+`osx-arm64`. Native AOT requires the platform's native compiler and linker;
+publishing must run on the target operating system. GitHub Actions builds and
+tests every change and publishes Native AOT ZIP artifacts for all six targets
+on pull requests and pushes to `master`; version tags also create a GitHub
+release.
 
 ## Solution layout
 

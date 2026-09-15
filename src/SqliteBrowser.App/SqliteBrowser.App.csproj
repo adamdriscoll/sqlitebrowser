@@ -22,6 +22,11 @@
     <AssemblyName>SqliteBrowser.App</AssemblyName>
     <RootNamespace>SqliteBrowser.App</RootNamespace>
     <ApplicationIcon>Assets\sqlite-browser.ico</ApplicationIcon>
+    <PublishAot>true</PublishAot>
+    <IsAotCompatible>true</IsAotCompatible>
+    <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+    <!-- DataGrid reports package-level warnings for reflection paths that this app avoids by defining columns explicitly. -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);IL2104;IL3053</WarningsNotAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

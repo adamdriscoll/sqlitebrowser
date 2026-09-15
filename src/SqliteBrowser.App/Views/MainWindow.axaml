@@ -1,6 +1,7 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:SqliteBrowser.App.ViewModels"
+xmlns:models="clr-namespace:SqliteBrowser.Core.Models;assembly=SqliteBrowser.Core"
+xmlns:vm="clr-namespace:SqliteBrowser.App.ViewModels"
         x:Class="SqliteBrowser.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{Binding WindowTitle}"
@@ -158,16 +159,15 @@
                       AutomationProperties.AutomationId="Structure.DdlText" Margin="0,0,0,8" />
             <DataGrid Grid.Row="2" ItemsSource="{Binding Structure.SelectedColumns}"
                       AutoGenerateColumns="False" IsReadOnly="True"
-                      x:CompileBindings="False"
                       AutomationProperties.AutomationId="Structure.ColumnsGrid">
               <DataGrid.Columns>
-                <DataGridTextColumn Header="#" Binding="{Binding Id}" Width="40" />
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="160" />
-                <DataGridTextColumn Header="Type" Binding="{Binding DataType}" Width="120" />
-                <DataGridCheckBoxColumn Header="Not Null" Binding="{Binding NotNull}" Width="80" />
-                <DataGridTextColumn Header="Default" Binding="{Binding DefaultValue}" Width="120" />
-                <DataGridTextColumn Header="PK" Binding="{Binding PrimaryKeyOrder}" Width="50" />
-                <DataGridCheckBoxColumn Header="Hidden" Binding="{Binding Hidden}" Width="70" />
+                <DataGridTextColumn Header="#" Binding="{CompiledBinding Id, DataType={x:Type models:ColumnDefinition}}" Width="40" />
+                <DataGridTextColumn Header="Name" Binding="{CompiledBinding Name, DataType={x:Type models:ColumnDefinition}}" Width="160" />
+                <DataGridTextColumn Header="Type" Binding="{CompiledBinding DataType, DataType={x:Type models:ColumnDefinition}}" Width="120" />
+                <DataGridCheckBoxColumn Header="Not Null" Binding="{CompiledBinding NotNull, DataType={x:Type models:ColumnDefinition}}" Width="80" />
+                <DataGridTextColumn Header="Default" Binding="{CompiledBinding DefaultValue, DataType={x:Type models:ColumnDefinition}}" Width="120" />
+                <DataGridTextColumn Header="PK" Binding="{CompiledBinding PrimaryKeyOrder, DataType={x:Type models:ColumnDefinition}}" Width="50" />
+                <DataGridCheckBoxColumn Header="Hidden" Binding="{CompiledBinding Hidden, DataType={x:Type models:ColumnDefinition}}" Width="70" />
               </DataGrid.Columns>
             </DataGrid>
           </Grid>
@@ -262,13 +262,12 @@
           <TextBlock Grid.Row="4" Text="Command Log" FontWeight="Bold" Margin="0,0,0,4" />
           <DataGrid Grid.Row="5" ItemsSource="{Binding ExecuteSql.CommandLog}"
                     AutoGenerateColumns="False" IsReadOnly="True"
-                    x:CompileBindings="False"
                     AutomationProperties.AutomationId="ExecuteSql.CommandLogGrid">
             <DataGrid.Columns>
-              <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="160" />
-              <DataGridTextColumn Header="Command" Binding="{Binding CommandText}" Width="3*" />
-              <DataGridCheckBoxColumn Header="OK" Binding="{Binding Success}" Width="50" />
-              <DataGridTextColumn Header="Error" Binding="{Binding Error}" Width="2*" />
+              <DataGridTextColumn Header="Time" Binding="{CompiledBinding Timestamp, DataType={x:Type models:SqlCommandLogEntry}}" Width="160" />
+              <DataGridTextColumn Header="Command" Binding="{CompiledBinding CommandText, DataType={x:Type models:SqlCommandLogEntry}}" Width="3*" />
+              <DataGridCheckBoxColumn Header="OK" Binding="{CompiledBinding Success, DataType={x:Type models:SqlCommandLogEntry}}" Width="50" />
+              <DataGridTextColumn Header="Error" Binding="{CompiledBinding Error, DataType={x:Type models:SqlCommandLogEntry}}" Width="2*" />
             </DataGrid.Columns>
           </DataGrid>
         </Grid>

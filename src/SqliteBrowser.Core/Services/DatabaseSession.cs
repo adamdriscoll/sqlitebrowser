@@ -668,6 +668,9 @@ public sealed class DatabaseSession : IAsyncDisposable
     private static string SqlColumnRef(string keyColumnName) =>
         keyColumnName == TablePage.RowIdColumnName ? "rowid" : SqlIdentifier.Quote(keyColumnName);
 
+    private static DataRow[] RowsInState(DataTable table, DataRowState state) =>
+        table.Rows.Cast<DataRow>().Where(row => row.RowState == state).ToArray();
+
     /// <summary>
     /// Persists every pending insert/update/delete in <paramref name="page"/>'s <see cref="TablePage.Data"/>
     /// back to the database, using parameterized commands keyed by rowid or primary key. Participates in
@@ -693,17 +696,17 @@ public sealed class DatabaseSession : IAsyncDisposable
         {
             int affected = 0;
 
-            foreach (DataRow row in dataTable.Select(null, null, DataViewRowState.Deleted))
+            foreach (DataRow row in RowsInState(dataTable, DataRowState.Deleted))
             {
                 affected += await DeleteRowAsync(page, row, tx, ct).ConfigureAwait(false);
             }
 
-            foreach (DataRow row in dataTable.Select(null, null, DataViewRowState.ModifiedCurrent))
+            foreach (DataRow row in RowsInState(dataTable, DataRowState.Modified))
             {
                 affected += await UpdateRowAsync(page, row, tx, ct).ConfigureAwait(false);
             }
 
-            foreach (DataRow row in dataTable.Select(null, null, DataViewRowState.Added))
+            foreach (DataRow row in RowsInState(dataTable, DataRowState.Added))
             {
                 affected += await InsertRowAsync(page, row, tx, ct).ConfigureAwait(false);
             }
