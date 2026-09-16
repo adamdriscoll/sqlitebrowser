@@ -11,6 +11,8 @@ querying, and editing SQLite databases. This fork is a clean C# and
 > pure-managed SQLite-compatible engine. Review Ahtola's compatibility and
 > durability status before using this application with production data.
 
+<img width="1916" height="1025" alt="image" src="https://github.com/user-attachments/assets/46ab1b60-4489-4ea9-955d-b23ff5a92102" />
+
 ## Features
 
 - Create, open, and inspect local SQLite databases
